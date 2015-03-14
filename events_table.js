@@ -2,7 +2,7 @@
 
       var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1RRZ_U3mcNJB3NpVmlW1F0KbIsJWkxmxMHgC8qYDchcs/pubhtml';
       function init() {
-        $.get( "http://api.ieeeatuhm.com/events-mongo", function( data ) {
+        $.get( "http://api.ieeeatuhm.com/events", function( data ) {
             console.log(JSON.stringify(data[0].events));
             showInfo(data);
         });

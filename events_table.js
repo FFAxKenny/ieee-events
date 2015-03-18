@@ -1,81 +1,83 @@
-      window.onload = function() { init() };
+window.onload = function() { init() };
 
-      var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1RRZ_U3mcNJB3NpVmlW1F0KbIsJWkxmxMHgC8qYDchcs/pubhtml';
-      function init() {
-        $.get( "http://api.ieeeatuhm.com/events", function( data ) {
-            console.log(JSON.stringify(data[0].events));
-            showInfo(data);
-        });
-      }
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1RRZ_U3mcNJB3NpVmlW1F0KbIsJWkxmxMHgC8qYDchcs/pubhtml';
 
-      function render_table_headers(headers){
-          var table = "";
-          var keys = Object.keys(headers);
-          // Print the header
-          table = table + "<thead>"
-              table = table + "<tr>"
-              for (key of keys){
-                  table = table + "<th>" + key + "</th>";
-              }
-          table = table + "</tr>"
-              table = table + "</thead>"
-              return table;
-      }
+function init() {
+    $.get( "http://api.ieeeatuhm.com/events", function( data ) {
+        console.log(JSON.stringify(data[0].events));
+        showInfo(data);
+    });
+}
+
+function render_table_headers(headers){
+    var table = "";
+    var keys = Object.keys(headers);
+    // Print the header
+    table = table + "<thead>"
+    table = table + "<tr>"
+    for (key of keys){
+        table = table + "<th>" + key + "</th>";
+    }
+    table = table + "</tr>"
+    table = table + "</thead>"
+    return table;
+}
       
-      function render_table_row(headers, line){
-          var table = "";
-          var keys = Object.keys(headers);
-          table = table + '<tr>';
-          for (key of keys){
-              console.log(key);
-              table = table + '<td>' + line[headers[key]] + '</td>';
-          }
-          table = table + '</tr>';
-          return table;
-      }
+function render_table_row(headers, line){
+    var table = "";
+    var keys = Object.keys(headers);
+    table = table + '<tr>';
+    for (key of keys){
+        console.log(key);
+        table = table + '<td>' + line[headers[key]] + '</td>';
+    }
+    table = table + '</tr>';
+    return table;
+}
 
 
-      function showInfo(data) {
-        console.log(data);
-        // data comes through as a simple array since simpleSheet is turned on
-        // alert("Successfully processed " + data.length + " rows!")
-        var table = "";
-        var headers = {"Date":"date", "Event Name":"eventname", "Location":"location", "Description":"description"};
-        
-        table = render_table_headers(headers);
+function showInfo(data) {
+    // console.log(data);
+    // data comes through as a simple array since simpleSheet is turned on
+    // alert("Successfully processed " + data.length + " rows!")
 
-        // Print the upcoming events
-        for (line of data){ 
-            // console.log(JSON.stringify(line));
-            if(line.final == "Y" && ( Date.parse(line.date) > Date.now() ) ){
-                table = table + render_table_row(headers,line);
-            }
+    var table = "";
+    var headers = {"Date":"date", "Event Name":"eventname", "Location":"location", "Description":"description"};
+
+    table = render_table_headers(headers);
+
+    // Print the upcoming events
+    for (line of data){ 
+        // console.log(JSON.stringify(line));
+        if(line.final == "Y" && ( Date.parse(line.date) > Date.now() ) ){
+            table = table + render_table_row(headers,line);
+        }
+    }
+
+    document.getElementById("upcoming_events").innerHTML = table;
+    table = render_table_headers(headers);
+
+    // Print the data
+    for (line of data){ 
+        // console.log(JSON.stringify(line));
+        if(line.final == "Y" && ( Date.parse(line.date) < Date.now() ) ){
+            table = table + render_table_row(headers,line);
         }
 
-        document.getElementById("upcoming_events").innerHTML = table;
+    }
 
-        table = render_table_headers(headers);
+    document.getElementById("past_events").innerHTML = table;
 
-        // Print the data
-        for (line of data){ 
-            // console.log(JSON.stringify(line));
-            if(line.final == "Y" && ( Date.parse(line.date) < Date.now() ) ){
-                table = table + render_table_row(headers,line);
-            }
-
+    table = render_table_headers(headers);
+    for (line of data){
+        if(line.final == "N"){
+            table = table + render_table_row(headers,line);
         }
+    }
+    document.getElementById("unplanned_events").innerHTML = table;
 
-        document.getElementById("past_events").innerHTML = table;
-        
-	    table = render_table_headers(headers);
-        for (line of data){
-             if(line.final == "N"){
-                 table = table + render_table_row(headers,line);
-             }
-        }
-        document.getElementById("unplanned_events").innerHTML = table;
-       
-        //console.log(JSON.stringify(data));
-      }
-      document.write("<br/>");
-      document.write("<p>The published spreadsheet is located at <a target='_new' href='" + public_spreadsheet_url + "'>" + public_spreadsheet_url + "</a></p>");        
+    //console.log(JSON.stringify(data));
+}
+
+document.write("<br/>");
+document.write("<p>The published spreadsheet is located at <a target='_new' href='" + public_spreadsheet_url + "'>" + public_spreadsheet_url + "</a></p>");        

@@ -11,13 +11,16 @@ function render_table_headers(headers){
     var table = "";
     var keys = Object.keys(headers);
     // Print the header
-    table = table + "<thead>"
-    table = table + "<tr>"
+    table = table 
+            + "<thead>"
+            + "<tr>";
+
     for (key of keys){
         table = table + "<th>" + key + "</th>";
     }
+
     table = table + "</tr>"
-    table = table + "</thead>"
+            + "</thead>";
     return table;
 }
       
@@ -67,11 +70,11 @@ function showInfo(data) {
     document.getElementById("past_events").innerHTML = table;
 
     table = render_table_headers(headers);
-    for (line of data){
-        if(line.final == "N"){
-            table = table + render_table_row(headers,line);
-        }
-    }
+
+    table += data.filter(function(element){
+        return element.final == "N";
+    });
+
     document.getElementById("unplanned_events").innerHTML = table;
 
     //console.log(JSON.stringify(data));

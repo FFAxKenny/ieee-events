@@ -53,7 +53,8 @@ function showInfo(data) {
             })
             .map(function(line){
                 return render_table_row(headers,line);
-            });
+            })
+            .join("");
     document.getElementById("upcoming_events").innerHTML = table;
 
 
@@ -64,7 +65,8 @@ function showInfo(data) {
             })
             .map(function(line){
                 return render_table_row(headers,line);
-            });
+            })
+            .join("");
     document.getElementById("past_events").innerHTML = table;
 
     // Render the 'unplanned' events
@@ -74,7 +76,8 @@ function showInfo(data) {
         })
         .map(function(line){
             return render_table_row(headers,line);
-        });
+        })
+        .join("");
     document.getElementById("unplanned_events").innerHTML = table;
 
     //console.log(JSON.stringify(data));

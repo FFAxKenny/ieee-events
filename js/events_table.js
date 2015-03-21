@@ -2,7 +2,7 @@ window.onload = function() { init() };
 
 function init() {
     $.get( "http://api.ieeeatuhm.com/events", function( data ) {
-        console.log(JSON.stringify(data[0].events));
+        //console.log(JSON.stringify(data[0].events));
         showInfo(data);
     });
 }
@@ -10,17 +10,18 @@ function init() {
 function render_table_headers(headers){
     var table = "";
     var keys = Object.keys(headers);
-    // Print the header
+
     table = table 
             + "<thead>"
             + "<tr>";
 
-    for (key of keys){
-        table = table + "<th>" + key + "</th>";
-    }
+    table += keys.map(function(key){
+        return "<th>" + key + "</th>";
+    }).join("");
 
     table = table + "</tr>"
             + "</thead>";
+
     return table;
 }
       
@@ -29,7 +30,7 @@ function render_table_row(headers, line){
     var keys = Object.keys(headers);
     table = table + '<tr>';
     for (key of keys){
-        console.log(key);
+        //console.log(key);
         table = table + '<td>' + line[headers[key]] + '</td>';
     }
     table = table + '</tr>';
@@ -45,36 +46,35 @@ function showInfo(data) {
     var table = "";
     var headers = {"Date":"date", "Event Name":"eventname", "Location":"location", "Description":"description"};
 
+    // Render the Upcoming Events
     table = render_table_headers(headers);
-
-    // Print the upcoming events
-    for (line of data){ 
-        // console.log(JSON.stringify(line));
-        if(line.final == "Y" && ( Date.parse(line.date) > Date.now() ) ){
-            table = table + render_table_row(headers,line);
-        }
-    }
-
+    table += data.filter(function(line){
+                return (line.final == "Y" && ( Date.parse(line.date) > Date.now() ) );
+            })
+            .map(function(line){
+                return render_table_row(headers,line);
+            });
     document.getElementById("upcoming_events").innerHTML = table;
+
+
+    // Render the Past Events
     table = render_table_headers(headers);
-
-    // Print the data
-    for (line of data){ 
-        // console.log(JSON.stringify(line));
-        if(line.final == "Y" && ( Date.parse(line.date) < Date.now() ) ){
-            table = table + render_table_row(headers,line);
-        }
-
-    }
-
+    table += data.filter(function(line){
+                return (line.final == "Y" && ( Date.parse(line.date) < Date.now() ) );
+            })
+            .map(function(line){
+                return render_table_row(headers,line);
+            });
     document.getElementById("past_events").innerHTML = table;
 
+    // Render the 'unplanned' events
     table = render_table_headers(headers);
-
-    table += data.filter(function(element){
-        return element.final == "N";
-    });
-
+    table += data.filter(function(row){
+        return (row.final === "N")
+        })
+        .map(function(line){
+            return render_table_row(headers,line);
+        });
     document.getElementById("unplanned_events").innerHTML = table;
 
     //console.log(JSON.stringify(data));

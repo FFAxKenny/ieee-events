@@ -8,32 +8,24 @@ function init() {
 }
 
 function render_table_headers(headers){
-    var table = "";
     var keys = Object.keys(headers);
-
-    table = table 
-            + "<thead>"
-            + "<tr>";
-
-    table += keys.map(function(key){
-        return "<th>" + key + "</th>";
-    }).join("");
-
-    table = table + "</tr>"
+    return "<thead>" 
+            + "<tr>" 
+            + keys.map(function(key){
+                return "<th>" + key + "</th>";
+              }).join("");
+            + "</tr>"
             + "</thead>";
-
-    return table;
 }
       
 function render_table_row(headers, line){
     var table = "";
     var keys = Object.keys(headers);
-    table = table + '<tr>';
+    table = '<tr>';
     for (key of keys){
-        //console.log(key);
-        table = table + '<td>' + line[headers[key]] + '</td>';
+        table += '<td>' + line[headers[key]] + '</td>';
     }
-    table = table + '</tr>';
+    table += '</tr>';
     return table;
 }
 
@@ -68,4 +60,3 @@ function showInfo(eventsList) {
 }
 
 document.write("<br/>");
-document.write("<p>The published spreadsheet is located at <a target='_new' href='" + public_spreadsheet_url + "'>" + public_spreadsheet_url + "</a></p>");        

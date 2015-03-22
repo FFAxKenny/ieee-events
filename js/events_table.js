@@ -38,57 +38,33 @@ function render_table_row(headers, line){
 }
 
 
-function showInfo(data) {
-    // console.log(data);
-    // data comes through as a simple array since simpleSheet is turned on
-    // alert("Successfully processed " + data.length + " rows!")
-
-    var table = "";
+function showInfo(eventsList) {
     var headers = {"Date":"date", "Event Name":"eventname", "Location":"location", "Description":"description"};
 
-    function isBeforeToday(date){
-        return Date.parse(date) > Date.now();
+    function isBeforeToday(someEvent){
+        return (someEvent.final === "Y") && (Date.parse(someEvent.date) > Date.now());
     }
-
-    function isAfterToday(date){
-        return Date.parse(date) < Date.now();
+    function isAfterToday(someEvent){
+        return (someEvent.final ==="Y") && (Date.parse(someEvent.date) < Date.now());
+    }
+    function isUnplanned(someEvent){
+        return (someEvent.final === "N");
+    }
+    function renderEvents(eventsList, headers, dateFilter ){
+        return render_table_headers(headers) + 
+        eventsList.filter(function(someEvent){
+            return dateFilter(someEvent);
+        })
+        .map(function(someEvent){
+            return render_table_row(headers,someEvent);
+        })
+        .join("");
     }
 
     // Render the Upcoming Events
-    document.getElementById("upcoming_events").innerHTML = 
-        render_table_headers(headers) + 
-        data.filter(function(line){
-            return (line.final == "Y" && isBeforeToday(line.date));
-        })
-        .map(function(line){
-            return render_table_row(headers,line);
-        })
-        .join("");
-
-
-    // Render the Past Events
-    document.getElementById("past_events").innerHTML =
-        render_table_headers(headers) +
-        data.filter(function(line){
-            return (line.final == "Y" && isAfterToday(line.date));
-        })
-        .map(function(line){
-            return render_table_row(headers,line);
-        })
-        .join("");
-
-
-    // Render the 'unplanned' events
-    document.getElementById("unplanned_events").innerHTML =
-        render_table_headers(headers) + 
-        data.filter(function(row){
-            return (row.final === "N")
-        })
-        .map(function(line){
-            return render_table_row(headers,line);
-        })
-        .join("");
-
+    document.getElementById("upcoming_events").innerHTML = renderEvents(eventsList, headers, isBeforeToday);
+    document.getElementById("past_events").innerHTML = renderEvents(eventsList, headers, isAfterToday);
+    document.getElementById("unplanned_events").innerHTML = renderEvents(eventsList, headers, isUnplanned);
 }
 
 document.write("<br/>");

@@ -46,41 +46,49 @@ function showInfo(data) {
     var table = "";
     var headers = {"Date":"date", "Event Name":"eventname", "Location":"location", "Description":"description"};
 
+    function isBeforeToday(date){
+        return Date.parse(date) > Date.now();
+    }
+
+    function isAfterToday(date){
+        return Date.parse(date) < Date.now();
+    }
+
     // Render the Upcoming Events
-    table = render_table_headers(headers);
-    table += data.filter(function(line){
-                return (line.final == "Y" && ( Date.parse(line.date) > Date.now() ) );
-            })
-            .map(function(line){
-                return render_table_row(headers,line);
-            })
-            .join("");
-    document.getElementById("upcoming_events").innerHTML = table;
-
-
-    // Render the Past Events
-    table = render_table_headers(headers);
-    table += data.filter(function(line){
-                return (line.final == "Y" && ( Date.parse(line.date) < Date.now() ) );
-            })
-            .map(function(line){
-                return render_table_row(headers,line);
-            })
-            .join("");
-    document.getElementById("past_events").innerHTML = table;
-
-    // Render the 'unplanned' events
-    table = render_table_headers(headers);
-    table += data.filter(function(row){
-        return (row.final === "N")
+    document.getElementById("upcoming_events").innerHTML = 
+        render_table_headers(headers) + 
+        data.filter(function(line){
+            return (line.final == "Y" && isBeforeToday(line.date));
         })
         .map(function(line){
             return render_table_row(headers,line);
         })
         .join("");
-    document.getElementById("unplanned_events").innerHTML = table;
 
-    //console.log(JSON.stringify(data));
+
+    // Render the Past Events
+    document.getElementById("past_events").innerHTML =
+        render_table_headers(headers) +
+        data.filter(function(line){
+            return (line.final == "Y" && isAfterToday(line.date));
+        })
+        .map(function(line){
+            return render_table_row(headers,line);
+        })
+        .join("");
+
+
+    // Render the 'unplanned' events
+    document.getElementById("unplanned_events").innerHTML =
+        render_table_headers(headers) + 
+        data.filter(function(row){
+            return (row.final === "N")
+        })
+        .map(function(line){
+            return render_table_row(headers,line);
+        })
+        .join("");
+
 }
 
 document.write("<br/>");

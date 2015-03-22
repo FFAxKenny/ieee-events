@@ -31,7 +31,7 @@ function render_table_row(headers, line){
 
 
 function showInfo(eventsList) {
-    var headers = {"Date":"date", "Event Name":"eventname", "Location":"location", "Description":"description"};
+    var headers = {"Date":"date", "Event Name":"eventname", "Time":"starttime", "Location":"location", "Description":"description"};
 
     function isBeforeToday(someEvent){
         return (someEvent.final === "Y") && (Date.parse(someEvent.date) > Date.now());

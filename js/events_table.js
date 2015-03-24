@@ -19,14 +19,12 @@ function render_table_headers(headers){
 }
       
 function render_table_row(headers, line){
-    var table = "";
     var keys = Object.keys(headers);
-    table = '<tr>';
-    for (key of keys){
-        table += '<td>' + line[headers[key]] + '</td>';
-    }
-    table += '</tr>';
-    return table;
+    return '<tr>' 
+            + keys.map(function(key){
+                return '<td>' + line[headers[key]] + '</td>';
+            }).join("")
+            + '</tr>';
 }
 
 

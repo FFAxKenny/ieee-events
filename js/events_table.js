@@ -42,13 +42,15 @@ function showInfo(eventsList) {
     }
     function renderEvents(eventsList, headers, dateFilter ){
         return render_table_headers(headers) + 
+        "<tbody>" + 
         eventsList.filter(function(someEvent){
             return dateFilter(someEvent);
         })
         .map(function(someEvent){
             return render_table_row(headers,someEvent);
         })
-        .join("");
+        .join("")
+        "</tbody></table>";
     }
 
     // Render the Upcoming Events
